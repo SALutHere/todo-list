@@ -11,14 +11,30 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+type loggerContextKey struct{}
+
+var (
+	key = loggerContextKey{}
+)
+
+// TODO: add Logger interface :)
+
 type Logger struct {
 	*zap.Logger
 
 	file *os.File
 }
 
+func ToContext(ctx context.Context, log *Logger) context.Context {
+	return context.WithValue(
+		ctx,
+		key,
+		log,
+	)
+}
+
 func FromContext(ctx context.Context) *Logger {
-	log, ok := ctx.Value("log").(*Logger)
+	log, ok := ctx.Value(key).(*Logger)
 	if !ok {
 		panic("no logger in context")
 	}
@@ -29,7 +45,7 @@ func FromContext(ctx context.Context) *Logger {
 func NewLogger(config Config) (*Logger, error) {
 	zapLvl := zap.NewAtomicLevel()
 	if err := zapLvl.UnmarshalText([]byte(config.Level)); err != nil {
-		return nil, fmt.Errorf("umarshal log level: %w", err)
+		return nil, fmt.Errorf("unmarshal log level: %w", err)
 	}
 
 	if err := os.MkdirAll(config.Folder, 0755); err != nil {

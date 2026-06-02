@@ -60,4 +60,4 @@ todoapp-run:
 	export POSTGRES_HOST=localhost && \
 	export POSTGRES_PORT=5433 && \
 	go mod tidy && \
-	go run cmd/todoapp/main.go
+	go run ${PROJECT_ROOT}/cmd/todoapp/main.go
