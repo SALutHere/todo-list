@@ -71,3 +71,10 @@ todoapp-run:
 	export POSTGRES_PORT=5433 && \
 	go mod tidy && \
 	go run ${PROJECT_ROOT}/cmd/todoapp/main.go
+
+todoapp-deploy:
+	@docker compose up -d --build todoapp
+
+
+ps:
+	@docker compose ps
